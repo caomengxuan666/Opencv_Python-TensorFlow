@@ -23,6 +23,8 @@ print(img)
 
 
 
+![image-20240115183052746](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240115183052746.png)
+
 ### 图像的显示
 
 ~~~python
@@ -34,7 +36,7 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 ~~~
 
-
+![image-20240115183256870](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240115183256870.png)
 
 ~~~python
 import cv2 
@@ -53,10 +55,11 @@ cv_show("image",img1)
 
 
 
-
+![image-20240115184540377](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240115184540377.png)
 
 灰度图只有一个颜色通道，所以打印出的shape的值只有高和宽两个参数
 
+![image-20240115184711613](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240115184711613.png)
 
 # 二.视频的读取与处理
 
@@ -90,6 +93,7 @@ cv2.destroyAllWindows()
 
 
 
+![image-20240116182042724](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116182042724.png)
 
 # 三.ROI区域
 
@@ -111,9 +115,17 @@ cv_show("image",muscle)
 
 
 
+![image-20240116182606027](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116182606027.png)
+
 
 
 ## 颜色通道提取
+
+![image-20240116183418955](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116183418955.png)
+
+![image-20240116183429506](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116183429506.png)
+
+![image-20240116183436392](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116183436392.png)
 
 ```python
 import cv2
@@ -168,7 +180,7 @@ newimg=cv2.merge((b,g,r))
 cv_show("newimg",newimg)
 ~~~
 
-
+![image-20240116183909983](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116183909983.png)
 
 # 四.边界填充
 
@@ -209,6 +221,8 @@ plt.show()
 
 
 
+![image-20240116193248252](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116193248252.png)
+
 # 五.数值计算
 
 ## 两种计算方法
@@ -245,7 +259,7 @@ plt.show()
 
 Result=alpha×x1+beta×x2+gamma
 
-
+![image-20240116203055387](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116203055387.png)
 
 ## 按比例放缩图像
 
@@ -303,7 +317,7 @@ for i in range(6):
 plt.show()
 ~~~
 
-
+![image-20240116211112252](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116211112252.png)
 
 # 七.图像平滑
 
@@ -315,9 +329,11 @@ plt.show()
 
 因为我懒得给他们加噪点了，这里就用Lena女神的经典照片处理了，可以看到这是一个有噪点的图像
 
+![image-20240116212438718](C:\Users\Lenovo\Desktop\lena.png)
 
 这是处理过后的
 
+![image-20240116212808694](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116212808694.png)
 
 可以看到降噪效果还是有的
 
@@ -350,11 +366,11 @@ cv_show('blur',blur)
 
 高斯分布长得有点像正态分布
 
-
+![image-20240116215613055](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116215613055.png)
 
 这下图像处理的就更干净一点点，当然可以继续调整参数了，我这里把sigmaX又从1设置成了3
 
-
+![image-20240116220152113](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116220152113.png)
 
 ~~~python
 import cv2
@@ -388,12 +404,15 @@ cv2.GaussianBlur(src, ksize, sigmaX[, dst[, sigmaY[, borderType]]])
 
 处理完的图像是这样的
 
+![image-20240116220506868](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116220506868.png)
 
 个人感觉这张是所有滤波里面处理的最好的，达到了还原度和降噪效果的均衡。
 
 然后我把中值滤波的ksize从5改到7，就发现图像有点失真了，然后调到3噪点又太多了，说明刚刚那个其实已经是最佳参数了
 
+![image-20240116220604010](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116220604010.png)
 
+![image-20240116220700262](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116220700262.png)
 
 当然日常开发要是没闲工夫一个个对比可以直接把图片全部展示出来，这样就把几个图像横着拼在一块了，也可以用vstack竖着拼
 
@@ -410,14 +429,15 @@ cv2.imshow("res",res)
 
 这是原图像
 
-
+![cmx](C:\Users\Lenovo\Desktop\cmx.jpg)
 
 这是灰度图gray
 
+![image-20240116222224478](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116222224478.png)
 
 这是腐蚀过后的
 
-
+![image-20240116222239730](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116222239730.png)
 
 ~~~python
 import cv2
@@ -444,7 +464,7 @@ cv_show("erosion",erosion)
 
 那这里把迭代次数改成2就是这样的了
 
-
+![image-20240116223856173](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116223856173.png)
 
 再腐蚀感觉这个倒三角边缘的线条都要没了
 
@@ -454,6 +474,9 @@ cv_show("erosion",erosion)
 
 膨胀就是腐蚀的逆过程，逆运算
 
+![image-20240116231316524](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116231316524.png)
+
+![image-20240116231248433](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116231248433.png)
 
 可以看到腐蚀一次之后再膨胀一次，虽然和原图还是有比较大的差距，但是感觉恢复了一点。这个膨胀的意义很多时候其实是，腐蚀的时候把原图像给损失了，为了弥补这个损失对腐蚀后的图像再膨胀一遍。
 
@@ -509,6 +532,7 @@ opening=cv2.morphologyEx(g,cv2.MORPH_OPEN,kernel)
 cv_show("openging",opening)
 ~~~
 
+![](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116232201790.png)
 
 ```python
 import cv2
@@ -552,12 +576,17 @@ cv_show("closing",closing)
 
 
 
+![image-20240116232300302](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116232300302.png)
+
 开运算就比较适合取出小亮区域，让物体边缘平滑，保证边缘的清晰，闭运算经常用来连接断开的区域，填充小的黑色区域，平滑物体的边缘，就是用来保持物体的连续性的，可以填充小的空洞。
 
 ## 4.梯度运算
 
 其实就是膨胀-腐蚀，也就是概率论中的（A-B），当然B属于A，因为膨胀的比腐蚀的大。就好比一个同心圆吧，用外面的减去里面的部分，让里面的变成黑的，剩下的白色的就是边界轮廓了。
 
+![image-20240116233447447](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116233447447.png)
+
+![image-20240116233455399](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116233455399.png)
 
 ~~~python
 import cv2
@@ -590,6 +619,7 @@ cv_show('gradient',gradient)
 * 礼帽：原始输入-开运算结果
 * 黑帽：闭运算-原始输入
 
+![image-20240116234132115](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240116234132115.png)
 
 左边是礼帽右边是黑帽
 
@@ -627,6 +657,9 @@ cv_show('res',res)
 
 图像区域要分为两个方向算，一个是Gx方向一个是Gy方向的，对于Gx矩阵，只需要把矩阵中的每个元素与一个权重矩阵中的元素对应相乘就行了，这个权重矩阵有点像是高斯分布的矩阵，离得越近权重越大，离得越远权重越小，区别就是一般来说用右边减去左边，因为矩阵右边都是大于0的，矩阵左边都是小于0的，矩阵中间是0，Gy计算也是一样的，用矩阵的下面减去上面。
 
+![image-20240117001122761](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117001122761.png)
+
+![image-20240117001131394](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117001131394.png)
 
 ~~~python
 import cv2
