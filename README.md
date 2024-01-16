@@ -1,5 +1,5 @@
 # Opencv_Python-TensorFlow
-Opencv和TensorFlow混合学习教程
+Opencv和TensorFlow混合学习教程，请下载PDF观看图片
 
 # 一.计算机眼中的图像
 
