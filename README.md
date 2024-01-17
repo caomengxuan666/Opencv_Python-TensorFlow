@@ -362,7 +362,7 @@ cv_show('blur',blur)
 
 ## 3.高斯滤波
 
-高斯滤波的卷积核里面的数值是满足高斯分布，相当于更重视中间的，可以理解为把中间的权重设置成1，然后靠得近的权值也设置的比较大，离得远就设置的小一点，表示重要性小一点。
+高斯滤波的卷积核里面的数值是满足高斯分布，相当于更重视中间的，可以理解为把总的的权重加起来设置成1，然后靠得近的权值也设置的比较大，离得远就设置的小一点，表示重要性小一点。
 
 高斯分布长得有点像正态分布
 
@@ -659,7 +659,7 @@ cv_show('res',res)
 
 ![image-20240117001122761](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117001122761.png)
 
-![image-20240117001131394](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117001131394.png)
+![image-20240117005234136](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117005234136.png)
 
 ~~~python
 import cv2
@@ -679,7 +679,7 @@ sobelx=cv2.Sobel(g,cv2.CV_64F,1,0,ksize=3)
 #要知道这样很可能算出负的值，即使会截断，它本质上也是负值，如果不转换，当右边是黑色，左边是白色，因为是用右边减去左边算的，黑到白是负数，所有负数都会被截断成0,就导致右边的白色区域会显示不出来
 sobelx=cv2.convertScaleAbs(sobelx)
 sobely=cv2.Sobel(g,cv2.CV_64F,0,1,ksize=3)
-sobelx=cv2.convertScaleAbs(sobelx)
+sobely=cv2.convertScaleAbs(sobely)
 
 cv_show('sobelx',sobelx)
 cv_show('sobley',sobely)
@@ -695,3 +695,333 @@ cv_show('sobley',sobely)
 比如说G=根号下Gx²+Gy²
 
 又或者是G=|G1x|+|G2y|
+
+一般来说是不建议直接计算xy的，效果是不太好的，会出现重影和模糊，而是分别计算x和y再进行求和，因为有一个addWeighted的这样的一个计算权重的函数
+
+
+
+![image-20240117005257809](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117005257809.png)
+
+~~~python
+import cv2
+import numpy as np
+# import matplotlib.pyplot as plt
+
+def cv_show(name,img):
+    cv2.imshow(name,img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    print(img.shape)
+
+img=cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg")
+g= cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+sobelx=cv2.Sobel(g,cv2.CV_64F,1,0,ksize=3)
+#要知道这样很可能算出负的值，即使会截断，它本质上也是负值，还是转化成绝对值来的比较好
+sobelx=cv2.convertScaleAbs(sobelx)
+sobely=cv2.Sobel(g,cv2.CV_64F,0,1,ksize=3)
+sobely=cv2.convertScaleAbs(sobely)
+sobelxy=cv2.addWeighted(sobelx,0.5,sobely,0.5,0)
+
+cv_show('sobelx',sobelx)
+cv_show('sobley',sobely)
+cv_show('sobelxy',sobelxy)
+~~~
+
+## 3.Scharr算子和laplacian算子
+
+Scharr算子和Sobel算子的区别就是它的权重矩阵差异性更大，也就是对结果的差异更加敏感.
+
+Sobel算子离得近的位置是-2，+2，离得远的位置是-1，+1，而Scharr算子离得近的位置是-10,10，离得远的位置是-3,3
+
+
+
+laplacian算子对变化更加的敏感，也就是说对噪点更敏感，用于边缘检测就不太好，这个算子是与其他算子结合使用的。别的算子基本采用的是一阶导，而它是二阶导，权重矩阵中间的元素是-4，离得近的是1，离得远的是0
+
+下面是三张的对比图
+
+![image-20240117161912896](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117161912896.png)
+
+![image-20240117161924018](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117161924018.png)
+
+![image-20240117161932427](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117161932427.png)
+
+![image-20240117162053947](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117162053947.png)
+
+这里由于颜色映射问题，SciView和cv2.imshow的结果看起来并不一样，但是能明显感觉出Sobel算子很适用于这张图的边缘检测,Scharr算子实在是太敏感了，画出的细节太多导致画面有点乱，而最后一个明显感觉噪点比第一个多一点，而且细节也不如第一个Sobe算子到位
+
+~~~python
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+# import matplotlib.pyplot as plt
+
+def cv_show(name,img):
+    cv2.imshow(name,img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    print(img.shape)
+
+img=cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg")
+g= cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+sobelx=cv2.Sobel(g,cv2.CV_64F,1,0,ksize=3)
+#要知道这样很可能算出负的值，即使会截断，它本质上也是负值，还是转化成绝对值来的比较好
+sobelx=cv2.convertScaleAbs(sobelx)
+sobely=cv2.Sobel(g,cv2.CV_64F,0,1,ksize=3)
+sobely=cv2.convertScaleAbs(sobely)
+sobelxy=cv2.addWeighted(sobelx,0.5,sobely,0.5,0)
+cv_show("sobel",sobelxy)
+
+scharrx=cv2.Scharr(g,cv2.CV_64F,1,0)
+scharry=cv2.convertScaleAbs(scharrx)
+scharrx=cv2.Scharr(g,cv2.CV_64F,0,1)
+scharry=cv2.convertScaleAbs(scharry)
+scharrxy=cv2.addWeighted(scharrx,0.5,scharry,0.5,0,dtype=cv2.CV_64F)
+
+
+cv_show('scharr',scharrxy)
+
+laplacian=cv2.Laplacian(g,cv2.CV_64F)
+laplacian=cv2.convertScaleAbs(laplacian)
+
+cv_show('laplacian',laplacian)
+
+~~~
+
+# 十.Canny边缘检测
+
+* 1.使用高斯滤波器，以平滑图像，滤除噪声
+* 2.计算图像中每个带像素点的梯度强度和方向
+* 3.应用非极大值抑制，以消除边缘检测带来的杂散响应
+* 4.应用双阈值检测来确定真实和潜在的边缘
+* 5.通过抑制孤立的弱边缘完成边缘检测
+
+## 1.高斯滤波
+
+还是采用归一化操作，用图像矩阵乘以权重矩阵。高斯滤波器的所有权值加起来等于1，越靠近中间的权重占比越大。就比如九个像素相乘这个权重矩阵之后，把这九个值加起来就是进行高斯滤波之后得到的值。对所有点重复这个过程就得到了高斯模糊过后的图像。
+
+
+
+## 2.梯度和方向
+
+G还是有两个算式，一个是G=sqrt(Gx²+Gy²)，一个是G=|Gx|+|Gy|
+
+方向θ=arctan(Gy/Gx)
+
+算梯度和方向离不开Sobel算子，Gx=Sx*A,Sx就是Sobel算子Gx方向的权重矩阵，A是图像矩阵，那么Gy也是同理的
+
+
+
+## 3.非极大值抑制
+
+比如说人脸检测，画出了好几个框框， 那这个时候要选择可能性最大的那一个，把其他的几个框框给去掉，也就是抑制掉，这就是所谓的非极大值抑制。因为边界的梯度一般都比较大，所以选取梯度最大的当作图像边界了。原理就是一个像素点与周围的像素点比较梯度的幅值大小，只选择最大的保留下来。
+
+主要分为两个方法
+
+### A：线性插值法
+
+设g1的梯度赋值M（g1)，g2的梯度幅值M(g2)，则dtmp1可以这么得到：M(dtmp1)=w.M(g2)+(1-w)*M(g1)
+
+其中w=distance(dtmp,1,g2)/distance(g1,g2)
+
+distance(g1,g2)表示两点间的距离
+
+### B：简化法
+
+为了简化计算，因为一个像素点周围有八个像素，把一个像素的梯度方向离散为八个方向，这样就只需要计算前后就行了，就不需要插值了
+
+
+
+## 4.双阈值检测
+
+梯度值大于>maxval就处理为边界
+
+minval<梯度值<maxval，连有边界就保留，否则舍弃
+
+梯度值<minval就舍弃
+
+![img](file:///C:\Users\Lenovo\Documents\Tencent Files\2507560089\nt_qq\nt_data\Pic\2024-01\Ori\066f7648ed3aa1a785b38db0df73b469.png)
+
+双阈值检测结果如下
+
+![image-20240117184958820](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117184958820.png)
+
+~~~python
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+# import matplotlib.pyplot as plt
+
+def cv_show(name,img):
+    cv2.imshow(name,img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    print(img.shape)
+
+img=cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg",cv2.IMREAD_GRAYSCALE)
+
+aussian=cv2.GaussianBlur(img,(5,5),1)
+
+v1=cv2.Canny(aussian,80,150)
+v2=cv2.Canny(aussian,50,100)
+
+res=np.hstack((v1,v2))
+cv_show('res',res)
+~~~
+
+## 5.抑制孤立的弱边缘
+
+把上述几个结合起来，然后创建一个全为1的卷积核，并对边缘处理过后所得图像用这个卷积核进行膨胀操作，可以连接边缘，并且去除一些孤立的弱边缘
+
+![image-20240117190417150](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117190417150.png)
+
+~~~python
+import cv2
+import numpy as np
+
+# 读取图像并转为灰度图
+
+img = cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg", cv2.IMREAD_GRAYSCALE)
+
+# 1. 使用高斯滤波器平滑图像，滤除噪声
+gaussian = cv2.GaussianBlur(img, (5, 5), 1)
+
+# 2. Canny 边缘检测
+edges = cv2.Canny(gaussian, 80, 150)  # 使用 Canny 函数进行双阈值检测
+
+# 3. 抑制孤立的弱边缘
+kernel = np.ones((5, 5), np.uint8)
+final_result = cv2.dilate(edges, kernel, iterations=1)
+
+# 显示结果
+cv2.imshow("Original Image", img)
+cv2.imshow("Final Result", final_result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+~~~
+
+# 十一.轮廓检测方法
+
+## 1.轮廓检测结果
+
+`cv2.findContours(img,mode,method)`
+
+**mode**:轮廓检索模式
+
+* RETR_EXTERNAL:只检索最外面的轮廓
+* RETR_LIST:检索所有的轮廓，并将其保存到一条链表中
+* RETR_CCOMP:检索所有的轮廓，并将其组织成两层:顶层是各部分的外部边界，第二层是空洞的边界
+* **<u>RETR_TREE</u>:**检索所有轮廓，并重构嵌套轮廓的整个层次
+
+**method**:轮廓逼近方法
+
+* CHAIN_APPROX_NONE:以Freeman链码的方式输出轮廓，所有其他方法输出多边形(顶点的序列)，就好像是把长方形的四条边给勾勒出来
+* CHAIN_APPROX_SIMPLE:压缩水平的、垂直的和斜的部分，也就是，函数只保留他们的终点部分，就好像是用四个点来表示一个长方形
+
+为了更高的准确率，使用二值图像
+
+![image-20240117194009521](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20240117194009521.png)
+
+~~~python
+import cv2
+import numpy as np
+
+def cv_show(name,img):
+    cv2.imshow(name,img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    print(img.shape)
+
+img = cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg", cv2.IMREAD_GRAYSCALE)
+
+# 1. 使用高斯滤波器平滑图像，滤除噪声
+gaussian = cv2.GaussianBlur(img, (5, 5), 1)
+
+# 2. Canny 边缘检测
+edges = cv2.Canny(gaussian, 80, 150)  # 使用 Canny 函数进行双阈值检测
+
+# 3. 抑制孤立的弱边缘
+kernel = np.ones((5, 5), np.uint8)
+final_result = cv2.dilate(edges, kernel, iterations=1)
+
+ret,thresh=cv2.threshold(final_result,127,255,cv2.THRESH_BINARY)
+
+cv_show('thresh',thresh)
+
+contours,hierarchy=cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+
+# 绘制轮廓
+draw_img=img.copy()
+'''
+这里的参数分别是绘制图像，轮廓，轮廓索引，颜色模式，线条厚度
+一定要用一个副本，不然原图会变掉的
+'''
+res=cv2.drawContours(draw_img,contours,-1,(0,0,255),2)
+cv_show('res',res)
+~~~
+
+注意，轮廓检测我用的是边缘检测的结果，因为我直接用原图进行边缘检测效果特别差，但是注意了，一般来说轮廓的绘制还是在原灰度图上进行的。
+
+
+
+## 2.轮廓特征
+
+常用的轮廓特征有面积，周长等等
+
+~~~python
+import cv2
+import numpy as np
+
+# 读取灰度图像
+img = cv2.imread("C:/Users/Lenovo/Desktop/cmx.jpg", cv2.IMREAD_GRAYSCALE)
+
+# 设定阈值
+thresh = 128
+
+# 大于阈值的像素值设为255，小于等于阈值的像素值设为0
+retval, thresholded_img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
+
+# 查找轮廓
+contours, hierarchy = cv2.findContours(thresholded_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+# 获取第一个轮廓
+contour = contours[0]
+
+# 计算轮廓的面积
+area = cv2.contourArea(contour)
+
+# 计算轮廓的周长
+perimeter = cv2.arcLength(contour, True)
+
+# 计算轮廓的质心
+M = cv2.moments(contour)
+centroid_x = int(M["m10"] / M["m00"])
+centroid_y = int(M["m01"] / M["m00"])
+
+# 计算轮廓的边界框
+x, y, w, h = cv2.boundingRect(contour)
+
+# 计算轮廓的最小外接圆
+(minEnclosingCircle_x, minEnclosingCircle_y), minEnclosingCircle_radius = cv2.minEnclosingCircle(contour)
+
+# 计算轮廓的椭圆拟合
+ellipse = cv2.fitEllipse(contour)
+
+# 在图像上绘制轮廓和特征
+cv2.drawContours(img, [contour], -1, (0, 255, 0), 2)
+cv2.circle(img, (centroid_x, centroid_y), 5, (0, 0, 255), -1)
+cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+cv2.circle(img, (int(minEnclosingCircle_x), int(minEnclosingCircle_y)), int(minEnclosingCircle_radius), (255, 255, 0), 2)
+cv2.ellipse(img, ellipse, (0, 255, 255), 2)
+
+# 显示结果
+cv2.imshow("Original Image", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+~~~
+
+
+
