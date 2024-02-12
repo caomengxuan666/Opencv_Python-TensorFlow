@@ -1,5 +1,5 @@
 # Opencv_Python-TensorFlow
-Opencv和TensorFlow混合学习教程，请下载PDF观看图片
+Opencv和TensorFlow混合学习教程，请打开Html观看图片
 
 ## 学习须知
 
